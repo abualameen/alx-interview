@@ -24,7 +24,8 @@ def pascal_triangle(n):
         row = [1]  # The first element of each row is always 1
         if i > 0:
             for j in range(1, i):
-                # Calculate the value of the current element as the sum of the two elements directly above it
+                # Calculate the value of the current element
+                # as the sum of the two elements directly above it
                 value = triangle[i - 1][j - 1] + triangle[i - 1][j]
                 row.append(value)
             row.append(1)  # The last element of each row is always 1
