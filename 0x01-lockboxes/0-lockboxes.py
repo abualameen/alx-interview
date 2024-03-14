@@ -1,6 +1,15 @@
 #!/usr/bin/python3
+"""
+this module implements the lockbok problem
+
+"""
+
 
 def canUnlockAll(boxes):
+    """
+    this function is the canunlockall function
+
+    """
     num_boxes = len(boxes)  # Total number of boxes
     visited = set()  # Set to keep track of visited boxes
     keys = set([0])
