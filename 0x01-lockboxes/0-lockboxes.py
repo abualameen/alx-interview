@@ -1,26 +1,27 @@
 #!/usr/bin/python3
 """
-this module implements the lockbok problem
-
+This module implements the lockbox problem.
 """
 
 
 def canUnlockAll(boxes):
     """
-    this function is the canunlockall function
-
+    Determine if all boxes can be opened.
     """
-    num_boxes = len(boxes)  # Total number of boxes
-    visited = set()  # Set to keep track of visited boxes
+    # Check if input is valid
+    if not isinstance(boxes, list) or len(boxes) < 1:
+        return False
+    num_boxes = len(boxes)
+    visited = set()
     keys = set([0])
     stack = [0]
-
     while stack:
         current_box = stack.pop()
         visited.add(current_box)
-        # Collect keys from the current box
+        # Collect valid keys from the current box
         for key in boxes[current_box]:
-            if key not in keys:
+            if isinstance(key, int) and 0 <= key < num_boxes \
+                    and key not in keys:
                 keys.add(key)
                 stack.append(key)
         # Check if all boxes can be opened
