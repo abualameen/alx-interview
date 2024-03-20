@@ -4,6 +4,7 @@ Defines a function minOperations(n) that calculates the fewest number of
 operations needed to result in exactly n H characters in a text file.
 """
 
+
 def minOperations(n):
     """
     Calculates the fewest number of operations needed to achieve exactly n H
@@ -14,7 +15,8 @@ def minOperations(n):
 
     Returns:
         int: The fewest number of operations needed to achieve exactly n H
-             characters. If it's impossible to achieve n H characters, returns 0.
+             characters. If it's impossible to achieve n
+             H characters, returns 0.
     """
     if n <= 1:
         return 0
