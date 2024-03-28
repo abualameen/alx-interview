@@ -1,82 +1,58 @@
 #!/usr/bin/python3
-
-"""
-Log Parsing Script
-
-This script reads log entries from standard input (stdin) line by line,
-parses them based on a specific format, and computes metrics.
-
-"""
-
 import sys
-import re
-
-# Regular expression pattern for parsing log entries
-LOG_PATTERN = (
-    r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] "GET '
-    r'\/projects\/260 HTTP\/1\.1" (\d{3}) (\d+)$'
-)
-
-# Initialize variables to store metrics
-total_file_size = 0
-status_code_counts = {
-    200: 0, 301: 0, 400: 0, 401: 0,
-    403: 0, 404: 0, 405: 0, 500: 0
-}
-line_count = 0
 
 
-def print_statistics():
-    """Prints the accumulated metrics."""
-    global total_file_size
-    global status_code_counts
-
-    print(f'Total file size: {total_file_size}')
-    for code in sorted(status_code_counts):
-        if status_code_counts[code] > 0:
-            print(f'{code}: {status_code_counts[code]}')
-
-
-def process_log_line(line):
+def print_metrics(total_size, status_codes):
     """
-    Processes a single log entry line.
-
-    Extracts data from the log entry, updates metrics,
-    and prints statistics every 10 lines or upon keyboard interruption.
+    Prints the computed metrics.
     """
-    global total_file_size
-    global status_code_counts
-    global line_count
-
-    match = re.match(LOG_PATTERN, line)
-    if match:
-        # Extract data from log entry
-        ip_address = match.group(1)
-        date = match.group(2)
-        status_code = int(match.group(3))
-        file_size = int(match.group(4))
-
-        # Update metrics
-        total_file_size += file_size
-        if status_code in status_code_counts:
-            status_code_counts[status_code] += 1
-
-        line_count += 1
-
-        # Check if 10 lines have been processed or keyboard interruption
-        if line_count % 10 == 0 or line.strip() == '':
-            print_statistics()
+    print("File size: {}".format(total_size))
+    sorted_status_codes = sorted(status_codes.items())
+    for code, count in sorted_status_codes:
+        print("{}: {}".format(code, count))
 
 
-try:
-    # Process input lines from stdin
-    for line in sys.stdin:
-        process_log_line(line.strip())
+def parse_line(line):
+    """
+    Parses a log line and returns the file size and status code.
+    """
+    parts = line.strip().split()
+    if len(parts) < 9:
+        return None, None
+    status_code = parts[-2]
+    try:
+        size = int(parts[-1])
+    except ValueError:
+        return None, None
+    return status_code, size
 
-except KeyboardInterrupt:
-    # Handle keyboard interruption (CTRL + C)
-    pass
 
-finally:
-    # Print statistics before exiting
-    print_statistics()
+def main():
+    """
+    Main function to read logs from stdin and compute metrics.
+    """
+    total_size = 0
+    status_codes = {str(code): 0 for code in [
+        200, 301, 400, 401, 403, 404, 405, 500]}
+    count = 0
+
+    try:
+        for line in sys.stdin:
+            count += 1
+            status_code, size = parse_line(line)
+            if status_code is not None and size is not None:
+                total_size += size
+                if status_code in status_codes:
+                    status_codes[status_code] += 1
+
+            if count == 10:
+                print_metrics(total_size, status_codes)
+                count = 0
+
+    except KeyboardInterrupt:
+        print_metrics(total_size, status_codes)
+        raise
+
+
+if __name__ == "__main__":
+    main()
