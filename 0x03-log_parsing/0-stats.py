@@ -15,10 +15,14 @@ status_code_counts = {
     200: 0, 301: 0, 400: 0, 401: 0,
     403: 0, 404: 0, 405: 0, 500: 0
 }
+line_count = 0
 
 
 # Function to print statistics
 def print_statistics():
+    global total_file_size
+    global status_code_counts
+
     print(f'Total file size: {total_file_size}')
     for code in sorted(status_code_counts):
         if status_code_counts[code] > 0:
@@ -29,6 +33,7 @@ def print_statistics():
 def process_log_line(line):
     global total_file_size
     global status_code_counts
+    global line_count
 
     match = re.match(LOG_PATTERN, line)
     if match:
@@ -43,8 +48,10 @@ def process_log_line(line):
         if status_code in status_code_counts:
             status_code_counts[status_code] += 1
 
+        line_count += 1
+
         # Check if 10 lines have been processed
-        if sum(status_code_counts.values()) % 10 == 0:
+        if line_count % 10 == 0:
             print_statistics()
 
 
