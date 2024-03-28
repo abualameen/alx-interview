@@ -1,5 +1,13 @@
 #!/usr/bin/python3
 
+"""
+Log Parsing Script
+
+This script reads log entries from standard input (stdin) line by line,
+parses them based on a specific format, and computes metrics.
+
+"""
+
 import sys
 import re
 
@@ -18,8 +26,8 @@ status_code_counts = {
 line_count = 0
 
 
-# Function to print statistics
 def print_statistics():
+    """Prints the accumulated metrics."""
     global total_file_size
     global status_code_counts
 
@@ -29,8 +37,13 @@ def print_statistics():
             print(f'{code}: {status_code_counts[code]}')
 
 
-# Function to process log lines
 def process_log_line(line):
+    """
+    Processes a single log entry line.
+
+    Extracts data from the log entry, updates metrics,
+    and prints statistics every 10 lines.
+    """
     global total_file_size
     global status_code_counts
     global line_count
