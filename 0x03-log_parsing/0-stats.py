@@ -42,7 +42,7 @@ def process_log_line(line):
     Processes a single log entry line.
 
     Extracts data from the log entry, updates metrics,
-    and prints statistics every 10 lines.
+    and prints statistics every 10 lines or upon keyboard interruption.
     """
     global total_file_size
     global status_code_counts
@@ -63,8 +63,8 @@ def process_log_line(line):
 
         line_count += 1
 
-        # Check if 10 lines have been processed
-        if line_count % 10 == 0:
+        # Check if 10 lines have been processed or keyboard interruption
+        if line_count % 10 == 0 or line.strip() == '':
             print_statistics()
 
 
