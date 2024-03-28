@@ -1,4 +1,15 @@
 #!/usr/bin/python3
+
+
+"""
+Log Parsing Script
+
+This script reads log entries from standard input (stdin) line by line,
+parses them based on a specific format, and computes metrics.
+
+"""
+
+
 import sys
 
 
