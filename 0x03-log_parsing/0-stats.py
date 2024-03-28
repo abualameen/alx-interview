@@ -4,12 +4,10 @@ import sys
 import re
 
 # Regular expression pattern for parsing log entries
-
 LOG_PATTERN = (
     r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] "GET '
     r'\/projects\/260 HTTP\/1\.1" (\d{3}) (\d+)$'
 )
-
 
 # Initialize variables to store metrics
 total_file_size = 0
