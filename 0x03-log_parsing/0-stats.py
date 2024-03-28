@@ -75,4 +75,8 @@ try:
 
 except KeyboardInterrupt:
     # Handle keyboard interruption (CTRL + C)
+    pass
+
+finally:
+    # Print statistics before exiting
     print_statistics()
