@@ -1,40 +1,57 @@
 #!/usr/bin/python3
+"""UTF-8 validation module.
 """
-Module to validate UTF-8 encoding
-"""
+
 
 def validUTF8(data):
-    """
-    Determine if a given data set represents a valid UTF-8 encoding.
-
-    Args:
-        data: A list of integers representing bytes of data.
-
-    Returns:
-        True if data is a valid UTF-8 encoding, else False.
+    """Checks if a list of integers are valid UTF-8 codepoints.
+    See <https://datatracker.ietf.org/doc/html/rfc3629#page-4>
     """
     if not data:  # Edge case: Empty data
         return False
-
-    bytes_to_follow = 0
-    for byte in data:
-        if bytes_to_follow > 0:
-            if byte >> 6 != 0b10:  # Edge case: Invalid continuation byte
-                return False
-            bytes_to_follow -= 1
-        else:
-            if byte >> 7 == 0:
-                continue  # Single byte character
-            elif byte >> 5 == 0b110:
-                bytes_to_follow = 1
-            elif byte >> 4 == 0b1110:
-                bytes_to_follow = 2
-            elif byte >> 3 == 0b11110:
-                bytes_to_follow = 3
-            else:
-                return False  # Edge case: Invalid leading bits
+    
+    skip = 0
+    n = len(data)
+    for i in range(n):
+        if skip > 0:
+            skip -= 1
+            continue
         
-        if bytes_to_follow < 0:  # Edge case: Incomplete sequence
+        if type(data[i]) != int or data[i] < 0 or data[i] > 0x10FFFF:  # Edge case: Invalid codepoints
             return False
-
-    return bytes_to_follow == 0
+        
+        elif data[i] <= 0x7f:
+            skip = 0
+        elif data[i] & 0b11111000 == 0b11110000:
+            # 4-byte utf-8 character encoding
+            span = 4
+            if n - i >= span:
+                next_body = [byte & 0b11000000 == 0b10000000 for byte in data[i + 1: i + span]]
+                if not all(next_body):
+                    return False
+                skip = span - 1
+            else:
+                return False
+        elif data[i] & 0b11110000 == 0b11100000:
+            # 3-byte utf-8 character encoding
+            span = 3
+            if n - i >= span:
+                next_body = [byte & 0b11000000 == 0b10000000 for byte in data[i + 1: i + span]]
+                if not all(next_body):
+                    return False
+                skip = span - 1
+            else:
+                return False
+        elif data[i] & 0b11100000 == 0b11000000:
+            # 2-byte utf-8 character encoding
+            span = 2
+            if n - i >= span:
+                next_body = [byte & 0b11000000 == 0b10000000 for byte in data[i + 1: i + span]]
+                if not all(next_body):
+                    return False
+                skip = span - 1
+            else:
+                return False
+        else:
+            return False
+    return True
