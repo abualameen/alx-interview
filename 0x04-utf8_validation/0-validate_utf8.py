@@ -13,32 +13,38 @@ def validUTF8(data):
 
     Returns:
         True if data is a valid UTF-8 encoding, else False.
-    """
-    bytes_to_follow = 0
-    for byte in data:
-        # Check if the byte is a continuation byte
-        if bytes_to_follow > 0:
-            # If the byte doesn't start with '10',
-            # it's not a valid continuation byte
-            if byte >> 6 != 0b10:
-                return False
-            bytes_to_follow -= 1
-            if bytes_to_follow < 0 or bytes_to_follow > len(data) - 1:
-                return False
+     """
+    # Iterate through each byte in the data set
+    index = 0
+    while index < len(data):
+        byte = data[index]
+        # Check the UTF-8 encoding pattern of the byte
+        # Count the number of leading '1's in the binary representation
+        if byte >> 7 == 0:
+            # Single-byte character: 0xxxxxxx
+            index += 1
+            continue
+        elif byte >> 5 == 0b110:
+            # Two-byte character: 110xxxxx 10xxxxxx
+            bytes_to_follow = 1
+        elif byte >> 4 == 0b1110:
+            # Three-byte character: 1110xxxx 10xxxxxx 10xxxxxx
+            bytes_to_follow = 2
+        elif byte >> 3 == 0b11110:
+            # Four-byte character: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            bytes_to_follow = 3
         else:
-            # Determine the number of bytes to follow based on the leading bits
-            if byte >> 7 == 0:
-                continue  # Single byte character
-            elif byte >> 5 == 0b110:
-                bytes_to_follow = 1
-            elif byte >> 4 == 0b1110:
-                bytes_to_follow = 2
-            elif byte >> 3 == 0b11110:
-                bytes_to_follow = 3
-            else:
-                return False  # Invalid leading bits
-        # Check for incomplete sequences
-        if bytes_to_follow < 0:
+            # Invalid leading bits
             return False
-    # Check for incomplete sequences
-    return bytes_to_follow == 0
+        # Check continuation bytes
+        index += 1
+        for _ in range(bytes_to_follow):
+            # Move to the next byte
+            index += 1
+            # If there are no more bytes, or if the
+            # byte does not start with '10',
+            # it's not a valid continuation byte
+            if index >= len(data) or (data[index] >> 6) != 0b10:
+                return False
+    # All bytes conform to UTF-8 encoding rules
+    return True
