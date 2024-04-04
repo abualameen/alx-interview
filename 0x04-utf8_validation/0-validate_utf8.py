@@ -13,9 +13,10 @@ def validUTF8(data):
     Returns:
         True if data is a valid UTF-8 encoding, else False.
     """
-    if not data:  # If data is empty or None, return False
+    # Check if data is null or empty
+    if not data:
         return False
-    
+
     bytes_to_follow = 0
 
     for byte in data:
