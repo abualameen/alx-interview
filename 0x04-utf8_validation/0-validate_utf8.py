@@ -3,7 +3,6 @@
 Module to validate UTF-8 encoding
 """
 
-
 def validUTF8(data):
     """
     Determine if a given data set represents a valid UTF-8 encoding.
@@ -13,12 +12,9 @@ def validUTF8(data):
 
     Returns:
         True if data is a valid UTF-8 encoding, else False.
-     """
-
-    # Initialize the count of bytes that should follow for the current character
+    """
     bytes_to_follow = 0
-    
-    # Iterate through each byte in the data set
+
     for byte in data:
         # Check if the byte is a continuation byte
         if bytes_to_follow > 0:
@@ -42,6 +38,6 @@ def validUTF8(data):
         # Check for incomplete sequences
         if bytes_to_follow < 0:
             return False
-    
+
     # Check for incomplete sequences
     return bytes_to_follow == 0
