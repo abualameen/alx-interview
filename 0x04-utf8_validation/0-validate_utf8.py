@@ -14,33 +14,34 @@ def validUTF8(data):
     Returns:
         True if data is a valid UTF-8 encoding, else False.
      """
+
+    # Initialize the count of bytes that should follow for the current character
+    bytes_to_follow = 0
+    
     # Iterate through each byte in the data set
-    index = 0
-    while index < len(data):
-        byte = data[index]
-        
-        # Count the number of leading '1's in the binary representation
-        if byte >> 7 == 0:
-            # Single-byte character: 0xxxxxxx
-            index += 1
-        elif byte >> 5 == 0b110:
-            # Two-byte character: 110xxxxx 10xxxxxx
-            if index + 1 >= len(data) or data[index + 1] >> 6 != 0b10:
+    for byte in data:
+        # Check if the byte is a continuation byte
+        if bytes_to_follow > 0:
+            # If the byte doesn't start with '10', it's not a valid continuation byte
+            if byte >> 6 != 0b10:
                 return False
-            index += 2
-        elif byte >> 4 == 0b1110:
-            # Three-byte character: 1110xxxx 10xxxxxx 10xxxxxx
-            if index + 2 >= len(data) or data[index + 1] >> 6 != 0b10 or data[index + 2] >> 6 != 0b10:
-                return False
-            index += 3
-        elif byte >> 3 == 0b11110:
-            # Four-byte character: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            if index + 3 >= len(data) or data[index + 1] >> 6 != 0b10 or data[index + 2] >> 6 != 0b10 or data[index + 3] >> 6 != 0b10:
-                return False
-            index += 4
+            bytes_to_follow -= 1
         else:
-            # Invalid leading bits
+            # Determine the number of bytes to follow based on the leading bits
+            if byte >> 7 == 0:
+                continue  # Single byte character
+            elif byte >> 5 == 0b110:
+                bytes_to_follow = 1
+            elif byte >> 4 == 0b1110:
+                bytes_to_follow = 2
+            elif byte >> 3 == 0b11110:
+                bytes_to_follow = 3
+            else:
+                return False  # Invalid leading bits
+        
+        # Check for incomplete sequences
+        if bytes_to_follow < 0:
             return False
     
-    # All bytes conform to UTF-8 encoding rules
-    return True
+    # Check for incomplete sequences
+    return bytes_to_follow == 0
