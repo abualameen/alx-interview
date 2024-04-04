@@ -15,7 +15,7 @@ def validUTF8(data):
         True if data is a valid UTF-8 encoding, else False.
     """
     # if not data:
-        # return False
+    # return False
     bytes_to_follow = 0
     for byte in data:
         # Check if the byte is a continuation byte
@@ -28,7 +28,8 @@ def validUTF8(data):
             if bytes_to_follow < 0 or bytes_to_follow > len(data) - 1:
                 return False
         else:
-            # Determine the number of bytes to follow based on the leading bits
+            # Determine the number of bytes to follow
+            # based on the leading bits
             if byte >> 7 == 0:
                 continue  # Single byte character
             elif byte >> 5 == 0b110:
