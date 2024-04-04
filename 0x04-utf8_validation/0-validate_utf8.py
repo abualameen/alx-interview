@@ -41,7 +41,7 @@ def validUTF8(data):
             else:
                 return False  # Invalid leading bits
         # Check for incomplete sequences
-        if bytes_to_follow < 0:
-            return False
+        # if bytes_to_follow < 0:
+        # return False
     # Check for incomplete sequences
     return bytes_to_follow == 0
