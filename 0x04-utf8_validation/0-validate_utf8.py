@@ -14,8 +14,8 @@ def validUTF8(data):
     Returns:
         True if data is a valid UTF-8 encoding, else False.
     """
-    if not data:
-        return False
+    # if not data:
+        # return False
     bytes_to_follow = 0
     for byte in data:
         # Check if the byte is a continuation byte
