@@ -27,7 +27,13 @@ def solve_nqueens(board, col, n):
     Recursive function to find all possible solutions to N queens problem.
     """
     if col >= n:
-        print(board)
+        # Convert board representation to list of coordinates
+        solution = []
+        for i in range(n):
+            for j in range(n):
+                if board[i][j] == 1:
+                    solution.append([i, j])
+        print(solution)
         return
     for i in range(n):
         if is_safe(board, i, col, n):
@@ -40,6 +46,9 @@ def nqueens(n):
     """
     Main function to solve N queens problem.
     """
+    if n < 4:
+        print("N must be at least 4")
+        sys.exit(1)
     board = [[0 for _ in range(n)] for _ in range(n)]
     solve_nqueens(board, 0, n)
 
