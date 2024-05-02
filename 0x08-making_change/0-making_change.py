@@ -7,37 +7,28 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
 
-    # Initialize a memoization table to store previously computed results
-    memo = {}
+    # Initialize an array to store the minimum number of coins needed for each total amount
+    dp = [float('inf')] * (total + 1)
+    dp[0] = 0
 
-    def dp(amount):
-        if amount in memo:
-            return memo[amount]
+    # Iterate through each coin value
+    for coin in coins:
+        # Update dp array for each possible total amount
+        for amount in range(coin, total + 1):
+            dp[amount] = min(dp[amount], dp[amount - coin] + 1)
 
-        # Base case: If the total amount is 0, return 0 coins
-        if amount == 0:
-            return 0
+    # If dp[total] is still infinity, it means total cannot be reached with the given coins
+    if dp[total] == float('inf'):
+        return -1
+    else:
+        return dp[total]
 
-        # Initialize the fewest number of coins needed to infinity
-        min_coins = float('inf')
 
-        # Iterate through each coin value
-        for coin in coins:
-            # Check if the coin value is less than or equal to the total amount
-            if coin <= amount:
-                # Recursively calculate the fewest number of
-                # coins for the remaining amount
-                num_coins = dp(amount - coin) + 1
+if __name__ == "__main__":
+    coins = [1, 2, 25]
+    total = 37
+    print(makeChange(coins, total))
 
-                # Update the minimum number of coins if necessary
-                min_coins = min(min_coins, num_coins)
-
-        # Memoize the result for future use
-        memo[amount] = min_coins
-        return min_coins
-
-    # Call the dynamic programming function
-    result = dp(total)
-
-    # If the result is infinity, return -1 (total cannot be met)
-    return result if result != float('inf') else -1
+    coins = [1256, 54, 48, 16, 102]
+    total = 1453
+    print(makeChange(coins, total))
