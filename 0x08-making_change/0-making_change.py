@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """Making Change."""
 
-
 def makeChange(coins, total):
     """Calculate the fewest number of coins
        needed to meet the total.
