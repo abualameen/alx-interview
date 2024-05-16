@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """ """
-
 def sieve_of_eratosthenes(n):
     """
     Find all prime numbers up to a given limit, n, using the Sieve of Eratosthenes algorithm.
@@ -58,8 +57,12 @@ def isWinner(x, nums):
         while original_set:
             if player_turn == 'Maria':
                 prime_numbs = [num for num in original_set if is_prime(num)]
-                player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
-                
+                while True:
+                    try:
+                        player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a valid prime number:")
                 # Remove the chosen prime number and its multiples from the set
                 original_set -= {player_input}
                 original_set -= {i for i in range(player_input*2, max(original_set)+1, player_input)}
@@ -69,8 +72,12 @@ def isWinner(x, nums):
                 
             else:
                 prime_numbs = [num for num in original_set if is_prime(num)]
-                player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
-                
+                while True:
+                    try:
+                        player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a valid prime number:")
                 # Remove the chosen prime number and its multiples from the set
                 original_set -= {player_input}
                 original_set -= {i for i in range(player_input*2, max(original_set)+1, player_input)}
@@ -84,7 +91,6 @@ def isWinner(x, nums):
         return 'Ben'
     else:
         return None
-
 
                 
 
