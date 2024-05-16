@@ -3,6 +3,7 @@
 Prime Game Module
 """
 
+
 def sieve_of_eratosthenes(max_num):
     """ Return a list of prime numbers up to max_num. """
     sieve = [True] * (max_num + 1)
@@ -15,6 +16,7 @@ def sieve_of_eratosthenes(max_num):
 
     return [num for num, is_prime in enumerate(sieve) if is_prime]
 
+
 def find_winner(primes, n):
     """ Determine the winner for a single round with set size n. """
     current_set = list(range(1, n + 1))
@@ -25,10 +27,12 @@ def find_winner(primes, n):
         if available_prime is None:
             break
 
-        current_set = [num for num in current_set if num % available_prime != 0]
+        current_set = [num for num in current_set if num %
+                       available_prime != 0]
         turn = 1 - turn
 
     return 'Ben' if turn == 1 else 'Maria'
+
 
 def isWinner(x, nums):
     """ Determine the overall winner after x rounds. """
