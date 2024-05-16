@@ -3,7 +3,6 @@
 Prime Game Module
 """
 
-
 def sieve_of_eratosthenes(max_num):
     """ """
     sieve = [True] * (max_num + 1)
