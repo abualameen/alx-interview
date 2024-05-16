@@ -1,89 +1,45 @@
 #!/usr/bin/python3
-""" """
-def sieve_of_eratosthenes(n):
-    """
-    Find all prime numbers up to a given limit, n, using the Sieve of Eratosthenes algorithm.
-    
-    Args:
-        n (int): The upper limit for finding prime numbers.
-    
-    Returns:
-        list: A list of prime numbers up to n.
-    """
-    primes = [True] * (n+1)
-    p = 2
-    while p*p <= n:
-        if primes[p]:
-            for i in range(p*p, n+1, p):
-                primes[i] = False
-        p += 1
-    prime_numbers = [p for p in range(2, n+1) if primes[p]]
-    return prime_numbers
+"""
+Prime Game Module
+"""
 
-def is_prime(num):
-    """
-    Check if a given number is prime.
-    
-    Args:
-        num (int): The number to be checked for primality.
-    
-    Returns:
-        bool: True if the number is prime, False otherwise.
-    """
-    if num < 2:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+def sieve_of_eratosthenes(max_num):
+    """ Return a list of prime numbers up to max_num. """
+    sieve = [True] * (max_num + 1)
+    sieve[0] = sieve[1] = False  # 0 and 1 are not primes
+
+    for start in range(2, int(max_num ** 0.5) + 1):
+        if sieve[start]:
+            for multiple in range(start * start, max_num + 1, start):
+                sieve[multiple] = False
+
+    return [num for num, is_prime in enumerate(sieve) if is_prime]
+
+def find_winner(primes, n):
+    """ Determine the winner for a single round with set size n. """
+    current_set = list(range(1, n + 1))
+    turn = 0  # Maria's turn is 0, Ben's turn is 1
+
+    while True:
+        available_prime = next((p for p in primes if p in current_set), None)
+        if available_prime is None:
+            break
+
+        current_set = [num for num in current_set if num % available_prime != 0]
+        turn = 1 - turn
+
+    return 'Ben' if turn == 1 else 'Maria'
 
 def isWinner(x, nums):
-    """
-    Simulate a game played by Maria and Ben, where they choose prime numbers and remove their multiples.
-    
-    Args:
-        x (int): The number of rounds played.
-        nums (list): An array of n values for each round.
-    
-    Returns:
-        str: The name of the player who won the most rounds, or 'None' if undetermined.
-    """
-    maria_wins, ben_wins = 0, 0
-    player_turn = 'Maria'
-    
-    for _ in range(x):
-        original_set = set(nums)
-        
-        while original_set:
-            if player_turn == 'Maria':
-                prime_numbs = [num for num in original_set if is_prime(num)]
-                while True:
-                    try:
-                        player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a valid prime number:")
-                # Remove the chosen prime number and its multiples from the set
-                original_set -= {player_input}
-                original_set -= {i for i in range(player_input*2, max(original_set)+1, player_input)}
-                
-                maria_wins += 1
-                player_turn = 'Ben'
-                
-            else:
-                prime_numbs = [num for num in original_set if is_prime(num)]
-                while True:
-                    try:
-                        player_input = int(input(f"{player_turn}'s turn. Choose a prime number: "))
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a valid prime number:")
-                # Remove the chosen prime number and its multiples from the set
-                original_set -= {player_input}
-                original_set -= {i for i in range(player_input*2, max(original_set)+1, player_input)}
-                
-                ben_wins += 1
-                player_turn = 'Maria'
+    """ Determine the overall winner after x rounds. """
+    if not nums or x < 1:
+        return None
+
+    max_num = max(nums)
+    primes = sieve_of_eratosthenes(max_num)
+
+    maria_wins = sum(1 for n in nums if find_winner(primes, n) == 'Maria')
+    ben_wins = x - maria_wins
 
     if maria_wins > ben_wins:
         return 'Maria'
@@ -91,7 +47,3 @@ def isWinner(x, nums):
         return 'Ben'
     else:
         return None
-
-                
-
-                
