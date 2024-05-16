@@ -27,6 +27,7 @@ def find_winner(primes, n):
         if available_prime is None:
             break
 
+        # Remove the prime and its multiples from the current set
         current_set = [num for num in current_set if num %
                        available_prime != 0]
         turn = 1 - turn
