@@ -26,6 +26,9 @@ def isWinner(x, nums):
     maria_wins, ben_wins = 0, 0
     for i in range(x):
         consecutive_nums = set(range(1, nums[i]+1))
+        if len(consecutive_nums) == 1:
+            ben_wins += 1
+            break
         primes = sieve_of_eratosthenes(max(consecutive_nums))
         maria_turn = True
         if len(primes) == 0 and maria_turn:
