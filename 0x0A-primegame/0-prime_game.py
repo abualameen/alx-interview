@@ -25,6 +25,9 @@ def isWinner(x, nums):
         return None
     maria_wins, ben_wins = 0, 0
     for i in range(x):
+        if nums[i] < 1:
+            ben_wins += 1
+            continue
         consecutive_nums = set(range(1, nums[i]+1))
         if len(consecutive_nums) == 1:
             ben_wins += 1

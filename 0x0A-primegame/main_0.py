@@ -1,19 +1,12 @@
 #!/usr/bin/python3
-# import random
-
-# Set the seed for reproducibility
-# random.seed(42)
-
-# Generate 100 random integers between 1 and 10,000
-# random_integers = [random.randint(1, 10000) for _ in range(10000)]
-
-# print(random_integers)
+"""
+Main file for testing
+"""
 
 isWinner = __import__('0-prime_game').isWinner
 
+nums = [0] * 10000
+for i in range(10000):
+    nums[i] = i
 
-
-# print("Winner: {}".format(isWinner(10, [5, 5, 5, 5, 5, 2, 2, 2, 2, 2])))
-print("Winner: {}".format(isWinner(6, [1, 1, 0, 0, 1, 8])))
-# print("Winner: {}".format(isWinner(6, [1, 1, 0, 0, 1, 8])))
-
+print("Winner: {}".format(isWinner(10000, nums)))
