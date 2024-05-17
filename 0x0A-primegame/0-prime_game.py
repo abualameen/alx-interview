@@ -1,48 +1,65 @@
 #!/usr/bin/python3
-"""
-Prime Game Module
-"""
+""" this is the module for the game """
 
 
-def sieve_of_eratosthenes(max_num):
-    """ Return a list of prime numbers up to max_num. """
-    sieve = [True] * (max_num + 1)
-    sieve[0] = sieve[1] = False  # 0 and 1 are not primes
-    for start in range(2, int(max_num ** 0.5) + 1):
-        if sieve[start]:
-            for multiple in range(start * start, max_num + 1, start):
-                sieve[multiple] = False
-    return [num for num, is_prime in enumerate(sieve) if is_prime]
-
-
-def play_round(primes, n):
-    """ Simulate a single round of the game with set size n. """
-    current_set = set(range(1, n + 1))
-    turn = 0  # Maria's turn is 0, Ben's turn is 1
-    while True:
-        available_prime = next((p for p in primes if p in current_set), None)
-        if available_prime is None:
-            break
-        # Remove the prime and its multiples from the current set
-        current_set -= set(range(available_prime, n + 1, available_prime))
-        turn = 1 - turn
-    return 'Ben' if turn == 1 else 'Maria'
+def sieve_of_eratosthenes(n):
+    """
+    this sieve of eratosthenes
+    """
+    primess = [True] * (n+1)
+    p = 2
+    while p*p <= n:
+        if primess[p]:
+            for i in range(p*p, n+1, p):
+                primess[i] = False
+        p += 1
+    prime_numbers = set([p for p in range(2, n+1) if primess[p]])
+    return prime_numbers
 
 
 def isWinner(x, nums):
-    """ Determine the overall winner after x rounds. """
-    if not nums or x < 1:
-        return None
-    max_num = max(nums)
-    primes = sieve_of_eratosthenes(max_num)
-    maria_wins = 0
-    ben_wins = 0
-    for n in nums:
-        winner = play_round(primes, n)
-        if winner == 'Maria':
-            maria_wins += 1
-        else:
+    """
+    this function computes the winner
+    """
+    maria_wins, ben_wins = 0, 0
+    for i in range(x):
+        consecutive_nums = set(range(1, nums[i]+1))
+        primes = sieve_of_eratosthenes(max(consecutive_nums))
+        maria_turn = True
+        if len(primes) == 0 and maria_turn:
             ben_wins += 1
+        while primes:
+            if maria_turn:
+                # primes = sieve_of_eratosthenes(max(consecutive_nums))
+                maria_prime = min(primes)
+                maria_picks = maria_prime
+                consecutive_nums -= {maria_picks}
+                primes -= {maria_prime}
+                consecutive_nums -= {i for i in range(
+                    maria_picks*2, max(consecutive_nums)+1, maria_picks)}
+                # maria_wins += 1
+                if len(primes) == 0 and maria_turn:
+                    maria_wins += 1
+                    maria_turn = False
+                    ben_turn = True
+                else:
+                    maria_turn = False
+                    ben_turn = True
+            else:
+                # primes = sieve_of_eratosthenes(max(consecutive_nums))
+                ben_prime = min(primes)
+                ben_picks = ben_prime
+                primes -= {ben_prime}
+                consecutive_nums -= {ben_picks}
+                consecutive_nums -= {i for i in range(
+                    ben_picks*2, max(consecutive_nums)+1, ben_picks)}
+                if len(primes) == 0 and ben_turn:
+                    ben_wins += 1
+                    ben_turn = False
+                    maria_turn = True
+                else:
+                    ben_turn = False
+                    maria_turn = True
     if maria_wins > ben_wins:
         return 'Maria'
     elif ben_wins > maria_wins:
