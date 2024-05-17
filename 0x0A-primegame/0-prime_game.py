@@ -35,7 +35,7 @@ def isWinner(x, nums):
             continue
         primes = sieve_of_eratosthenes(max(consecutive_nums))
         if len(primes) == 0 and maria_turn:
-            ben_wins += 1
+            maria_wins += 1
         while primes:
             if maria_turn:
                 # primes = sieve_of_eratosthenes(max(consecutive_nums))
