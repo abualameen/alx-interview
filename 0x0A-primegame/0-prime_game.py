@@ -21,6 +21,8 @@ def isWinner(x, nums):
     """
     this function computes the winner
     """
+    if not nums or x < 1:
+        return None
     maria_wins, ben_wins = 0, 0
     for i in range(x):
         consecutive_nums = set(range(1, nums[i]+1))
