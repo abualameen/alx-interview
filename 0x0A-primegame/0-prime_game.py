@@ -21,18 +21,13 @@ def isWinner(x, nums):
     """
     this function computes the winner
     """
-    if not nums or x < 1:
-        return None
     maria_wins, ben_wins = 0, 0
     for i in range(x):
-        if nums[i] < 1:
-            ben_wins += 1
-            continue
         consecutive_nums = set(range(1, nums[i]+1))
         primes = sieve_of_eratosthenes(max(consecutive_nums))
         maria_turn = True
-        # if len(primes) == 0 and maria_turn:
-        #     ben_wins += 1
+        if len(primes) == 0 and maria_turn:
+            ben_wins += 1
         while primes:
             if maria_turn:
                 # primes = sieve_of_eratosthenes(max(consecutive_nums))
@@ -71,7 +66,3 @@ def isWinner(x, nums):
         return 'Ben'
     else:
         return None
-
-
-# print("Winner: {}".format(isWinner(6, [1, 1, 0, 0, 1, 8])))
-    
